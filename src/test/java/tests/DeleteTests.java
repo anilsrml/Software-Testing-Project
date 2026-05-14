@@ -9,38 +9,32 @@ import utils.TestData;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.isEmptyOrNullString;
 import static org.hamcrest.Matchers.lessThan;
-import static org.hamcrest.Matchers.not;
 
-public class GetTests extends BaseTest {
-
+public class DeleteTests extends BaseTest {
     @Test
     @Tag("functional")
-    @DisplayName("GET /posts/1 should return expected post details")
-    void shouldReturnPostByIdWithExpectedFields() {
+    @DisplayName("DELETE /posts/1 should return success response")
+    void shouldDeletePostById() {
         Response response = given()
                 .spec(requestSpec)
                 .when()
-                .get(TestData.POSTS_ENDPOINT + "/1");
+                .delete(TestData.POSTS_ENDPOINT + "/1");
 
         response.then()
                 .statusCode(200)
-                .body("userId", equalTo(1))
-                .body("id", equalTo(1))
-                .body("title", not(isEmptyOrNullString()));
+                .body(equalTo("{}"));
     }
-
     @Test
     @Tag("performance")
-    @DisplayName("GET /posts/1 should respond within SLA")
-    void shouldReturnPostByIdWithinSla() {
+    @DisplayName("DELETE /posts/1 should respond within SLA")
+    void shouldDeletePostByIdWithinSla() {
         given()
                 .spec(requestSpec)
                 .when()
-                .get(TestData.POSTS_ENDPOINT + "/1")
+                .delete(TestData.POSTS_ENDPOINT + "/1")
                 .then()
                 .statusCode(200)
-                .time(lessThan(TestData.GET_RESPONSE_TIME_LIMIT_MS));
+                .time(lessThan(TestData.DELETE_RESPONSE_TIME_LIMIT_MS));
     }
 }

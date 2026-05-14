@@ -14,7 +14,9 @@ public class PostRequest {
         this.body = body;
         this.userId = userId;
     }
-
+    //İçerisinde title, body ve userId değişkenlerini barındırır.
+    //Rest Assured bu sınıfı kullanarak Java nesnesini otomatik olarak JSON formatına dönüştürür.
+    //Bu yöntem, manuel olarak string yazmaktan çok daha güvenli ve profesyoneldir.
     public String getTitle() {
         return title;
     }

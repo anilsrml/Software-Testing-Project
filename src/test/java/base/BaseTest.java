@@ -20,3 +20,5 @@ public abstract class BaseTest {
                 .build();
     }
 }
+//RequestSpecBuilder kullanılarak, tüm isteklerin varsayılan olarak JSON formatında (ContentType.JSON)
+// gönderilmesi sağlanır. Bu sayede her test dosyasında tekrar tekrar ayar yapmanıza gerek kalmaz.

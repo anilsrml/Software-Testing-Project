@@ -1,8 +1,8 @@
 # REST Assured API Regression Test Framework
 
 ## 1. Proje Açıklaması
-Bu proje, `https://jsonplaceholder.typicode.com` servisi üzerinde GET ve POST senaryolarını kapsayan profesyonel seviyede bir REST API regression test otomasyon framework'üdür.  
-Amaç; ölçeklenebilir, okunabilir ve merkezi yönetilen bir test mimarisi ile hızlı geri bildirim sağlamaktır.
+Bu proje, `https://jsonplaceholder.typicode.com` servisi üzerinde GET, POST ve DELETE senaryolarını kapsayan REST API regresyon test otomasyon projesidir.
+Amaç; API cevaplarının status code, response body ve response time kontrollerini otomatik olarak doğrulamaktır.
 
 ## 2. Kullanılan Teknolojiler
 - Java 17
@@ -23,23 +23,42 @@ Amaç; ölçeklenebilir, okunabilir ve merkezi yönetilen bir test mimarisi ile 
    ```bash
    cd RestAssuredTestProject
    ```
-4. Bağımlılıkları indirin ve testleri çalıştırın:
+4. Bağımlılıkları indirin ve varsayılan testleri çalıştırın:
    ```bash
-   mvn clean test
+   mvn test
    ```
 
-## 4. Test Çalıştırma Komutu
+## 4. Test Çalıştırma Komutları
 ```bash
-mvn clean test
+# Functional regression (varsayılan)
+mvn test
+
+# Performance/SLA testleri (build fail etmeden raporlar)
+mvn test -Pperformance
 ```
 
-## 5. Örnek Test Çıktısı
+`mvn test` komutu varsayılan olarak `functional` etiketli testleri çalıştırır. Bu testlerde API'nin doğru status code ve beklenen response body değerlerini döndürüp döndürmediği kontrol edilir.
+
+`mvn test -Pperformance` komutu `performance` profilini aktif eder. Bu profil ile GET, POST ve DELETE isteklerinin belirlenen süre limitleri içinde cevap verip vermediği doğrulanır.
+
+## 5. Test Kapsamı
+- `GET /posts/1`: Mevcut bir post kaydının başarıyla döndüğünü kontrol eder.
+- `POST /posts`: Request body ile yeni post oluşturma senaryosunu kontrol eder.
+- `DELETE /posts/1`: Silme isteğinin başarılı response döndürdüğünü kontrol eder.
+
+## 6. Tag Stratejisi
+- `@Tag("functional")`: status code + body doğrulamaları
+- `@Tag("performance")`: response-time (SLA) doğrulamaları
+
+Varsayılan çalıştırma functional testleri koşar. `performance` profili sadece SLA testlerini çalıştırır ve sonuçları raporlar.
+
+## 7. Örnek Test Çıktısı
 ```text
-[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0
+[INFO] Tests run: 3, Failures: 0, Errors: 0, Skipped: 0
 [INFO] BUILD SUCCESS
 ```
 
-## 6. Framework Mimarisi Açıklaması
+## 8. Framework Mimarisi Açıklaması
 ```text
 project-root/
 ├── src/test/java
@@ -48,8 +67,9 @@ project-root/
 │   ├── models
 │   │   └── PostRequest.java    # POST request body POJO modeli
 │   ├── tests
-│   │   ├── GetTests.java       # GET /posts/1 doğrulamaları
-│   │   └── PostTests.java      # POST /posts doğrulamaları
+│   │   ├── GetTests.java       # GET functional + SLA testleri
+│   │   ├── PostTests.java      # POST functional + SLA testleri
+│   │   └── DeleteTests.java    # DELETE functional + SLA testleri
 │   └── utils
 │       └── TestData.java       # Endpoint, SLA ve test verileri
 ├── src/test/resources
